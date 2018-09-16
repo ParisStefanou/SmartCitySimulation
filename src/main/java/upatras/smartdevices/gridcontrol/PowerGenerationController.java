@@ -81,7 +81,7 @@ public class PowerGenerationController extends AbstractSimulatableDevice {
             for (PowerPlant powerplant : power_sources) {
                 total = utilize_power_source(powerplant, total, start, duration_to_plan_for);
             }
-            if (auxilary_power_sources.size() > 0 && Math.abs(total.value) > 100000) {
+            if (auxilary_power_sources.size() > 0 && Math.abs(total.value) > 10000) {
 
                 total=total.dividedBy(3);
 

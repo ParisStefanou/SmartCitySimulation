@@ -21,6 +21,7 @@ import upatras.electricaldevicesimulation.simulationcore.environmentalvariables.
 import upatras.electricaldevicesimulation.simulationcore.environmentalvariables.PowerProductionVariable;
 import upatras.electricaldevicesimulation.simulationcore.environmentalvariables.PowerVariable;
 import upatras.simulationmodels.devices.CoalPowerPlant;
+import upatras.simulationmodels.devices.GasPowerPlant;
 import upatras.smartdevices.gridcontrol.IdealPowerPlant;
 import upatras.smartdevices.gridcontrol.PowerGenerationController;
 import upatras.smartdevices.gridcontrol.VirtualPowerPlant;
@@ -85,16 +86,16 @@ public class EntryPoint {
         MeasurableItemCollector a = null;
         MeasurableItemCollector b = null;
 
-        if (false) {
+        if (true) {
             PowerGenerationController generation_controller = new PowerGenerationController(city);
 
             CoalPowerPlant coalpp = new CoalPowerPlant(ComplexPower.MegaWatts(3.2, 0), ComplexPower.MegaWatts(6, 0), city);
-            //GasPowerPlant gaspp = new GasPowerPlant(ComplexPower.MegaWatts(0.4, 0), ComplexPower.MegaWatts(1.5, 0), city);
+            GasPowerPlant gaspp = new GasPowerPlant(ComplexPower.MegaWatts(0.4, 0), ComplexPower.MegaWatts(1.5, 0), city);
             //PowerPlant idpp = new PowerPlant(ComplexPower.MegaWatts(3.6, 0), ComplexPower.MegaWatts(10, 0), ComplexPower.KiloWatts(1, 0), city);
 
 
             generation_controller.addPowerPlant(coalpp);
-            //generation_controller.addPowerPlant(gaspp);
+            generation_controller.addPowerPlant(gaspp);
             //generation_controller.addPowerPlant(idpp);
             if (true) {
                 VirtualPowerPlant virtpp = new VirtualPowerPlant(city.simulationinstance, occupied_houses);
@@ -116,14 +117,16 @@ public class EntryPoint {
 
         sgi.preprocess(DeviceSimulationInstance.RunMode.parallel, Duration.standardMinutes(1), Duration.standardMinutes(1));
 
-        //new MeasurableItemCollector(occupied_houses.get(0).refrigerator.internal_temp).streamingVisualize();
-        //new MeasurableItemCollector(occupied_houses.get(1).refrigerator.internal_temp).streamingVisualize();
-        //new MeasurableItemCollector(occupied_houses.get(2).refrigerator.internal_temp).streamingVisualize();
+        boolean streaming_visualize = false;
+        if (streaming_visualize) {
+            new MeasurableItemCollector(occupied_houses.get(0).refrigerator.internal_temp).streamingVisualize();
+            new MeasurableItemCollector(occupied_houses.get(1).refrigerator.internal_temp).streamingVisualize();
+            new MeasurableItemCollector(occupied_houses.get(2).refrigerator.internal_temp).streamingVisualize();
+        }
 
+        Duration dur = Duration.standardHours(18);
 
-        Duration dur = Duration.standardDays(1);
-
-        sgi.asi.event_resolver.erg.debug=true;
+        sgi.asi.event_resolver.erg.debug = true;
         sgi.advanceDuration(dur);
 
         System.out.println("Simulation Ended");
@@ -133,10 +136,11 @@ public class EntryPoint {
             sgi.asi.event_resolver.compressedVisualize();
         }
 
-        //power_collector.compressedVisualize();
-        //power_collector1.compressedVisualize();
-        //power_collector2.compressedVisualize();
-
+        if (!streaming_visualize) {
+            power_collector.compressedVisualize();
+            power_collector1.compressedVisualize();
+            power_collector2.compressedVisualize();
+        }
 
         power_collector.toCSV();
         power_collector1.toCSV();
