@@ -119,6 +119,13 @@ public class EntryPoint {
 
         boolean streaming_visualize = false;
         if (streaming_visualize) {
+            new MeasurableItemCollector(city.getVariable(PowerVariable.class)).streamingVisualize();
+            new MeasurableItemCollector(city.getVariable(PowerConsumptionVariable.class)).streamingVisualize();
+            new MeasurableItemCollector(city.getVariable(PowerProductionVariable.class)).streamingVisualize();
+
+        }
+        boolean refrigerator_temperature_monitoring=false;
+        if (refrigerator_temperature_monitoring) {
             new MeasurableItemCollector(occupied_houses.get(0).refrigerator.internal_temp).streamingVisualize();
             new MeasurableItemCollector(occupied_houses.get(1).refrigerator.internal_temp).streamingVisualize();
             new MeasurableItemCollector(occupied_houses.get(2).refrigerator.internal_temp).streamingVisualize();
